@@ -38,6 +38,7 @@ public class TodoMVCTest {
         $$("#todo-list li").shouldHave(exactTexts("New Task", "New Task 1", "New Task 2")); //checking the name of the elements
 
         //$$("todo-list>li").filterBy(exactText("New Task 2")).find(".toogle").click(); //look for special element, check in the toogle
+
         $$("todo-list>li").filterBy(exactText("New Task 2")).find(cssClass(".toggle")).click();
 
         $$("todo-list>li").filterBy(cssClass("completed")).shouldHave(exactTexts("New Task 2")); //filter only completed ones and check their texts
@@ -46,6 +47,7 @@ public class TodoMVCTest {
     }
 
     private void add(String text) {
+
         $("#new-todo").setValue(text).pressEnter();
     }
 
