@@ -1,17 +1,15 @@
 package ua.net.itlabs;
 
 
-import static com.codeborne.selenide.Condition.cssClass;
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.CollectionCondition.exactTexts;
-
-import com.codeborne.selenide.Configuration;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.junit.Test;
+
+import static com.codeborne.selenide.CollectionCondition.exactTexts;
+import static com.codeborne.selenide.Condition.enabled;
+import static com.codeborne.selenide.Configuration.browser;
+import static com.codeborne.selenide.Configuration.holdBrowserOpen;
+import static com.codeborne.selenide.Selectors.byXpath;
+import static com.codeborne.selenide.Selenide.*;
 
 
 public class TodoMVCTest {
@@ -19,45 +17,26 @@ public class TodoMVCTest {
     @Test
     public void testCreateTask () {
 
-        ChromeDriverManager.getInstance().setup(); //instal google drive
-        Configuration.browser = "chrome";
+        ChromeDriverManager.getInstance().setup();
+        browser = "chrome";
 
-        open("http://todomvc.com/examples/emberjs/"); //open tested site
+        open("http://todomvc.com/examples/emberjs/");
 
-        //$("#new-todo").shouldBe(visible).setValue("New task").pressEnter(); //set the timeout until all elements will be visible
-        //Configuration.timeout = 6000; there is ability to change the default timeout
+        $(byXpath("//*[@id='new-todo']")).shouldBe(enabled).setValue("New Task 0").pressEnter();
+        $(byXpath("//*[@id='new-todo']")).setValue("New Task 1").pressEnter();
+        $(byXpath("//*[@id='new-todo']")).setValue("New Task 2").pressEnter();
 
+        $$(byXpath("//*[@id='todo-list']//li")).shouldHave(exactTexts("New Task 0", "New Task 1", "New Task 2"));
+        $(byXpath(".//*[@id='todo-list']//li//*//label[contains(text(), 'New Task 2')]//..//*[@class='toggle']")).click();
 
-        //add();// method of the adding elements to the list - hardocoded parameters - bad idea
-        add("New task");
-        add("New task 1");
-        add("New task 2");
+        $$(byXpath(".//*[@id='todo-list']//li//*//label[contains(text(), 'New Task 2')]//..//*[@class='completed ember-view']"));
+        $$(byXpath(".//*[@id='todo-list']//li//*//label[contains(text(), 'New Task 0', 'New Task 1)]//..//*[@class='ember-view']"));
 
-        //$("#todo-list li").shouldHave(size(3)); //checking the amound of the elements on the page
+        holdBrowserOpen = true;
 
-        $$("#todo-list li").shouldHave(exactTexts("New Task", "New Task 1", "New Task 2")); //checking the name of the elements
-
-        //$$("todo-list>li").filterBy(exactText("New Task 2")).find(".toogle").click(); //look for special element, check in the toogle
-
-        $$("todo-list>li").filterBy(exactText("New Task 2")).find(cssClass(".toggle")).click();
-
-        $$("todo-list>li").filterBy(cssClass("completed")).shouldHave(exactTexts("New Task 2")); //filter only completed ones and check their texts
-
-        $$("todo-list>li").excludeWith(cssClass("completed")).shouldHave(exactTexts("New Task", "New Task 1")); //filter only not completed ones, check their texts
     }
 
-    private void add(String text) {
-
-        $("#new-todo").setValue(text).pressEnter();
-    }
-
-
-//    private void add() {
-//        $("#new-todo").setValue("New task").pressEnter(); //look for element on the page
-//        $("#new-todo").setValue("New task 1").pressEnter();
-//        $("#new-todo").setValue("New task 2").pressEnter();
-//    }
-
-    //private final SelenideElement newTodo = $("#new-todo"); //test-method
-    //SelenideElement newTodo = $("#new-todo"); // variable for correct name and using
 }
+
+
+
